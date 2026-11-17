@@ -1,0 +1,157 @@
+/* ==========================================
+   MAPA DAS OFERTAS — Estilos com Cor ROXA
+========================================== */
+
+:root {
+    --roxo-escuro: #6b21a8;      /* Cabeçalhos e faixa topo */
+    --roxo-medio: #7c3aed;       /* Botões e destaques */
+    --roxo-claro: #ede9fe;       /* Fundo suave */
+    --roxo-borda: #ddd6fe;       /* Bordas */
+    --fundo-tela: #faf7ff;       /* Fundo da página */
+    --fundo-card: #ffffff;       /* Caixas brancas */
+    --texto-escuro: #1f2937;     /* Textos principais */
+    --texto-claro: #6b7280;      /* Textos secundários */
+    --sombra: 0 4px 12px rgba(107, 33, 168, 0.08);
+    --raio: 10px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    background: var(--fundo-tela);
+    color: var(--texto-escuro);
+    line-height: 1.5;
+    font-size: 15px;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+input, textarea {
+    font-family: inherit;
+    font-size: 15px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ==========================================
+   TELA DE LOGIN
+========================================== */
+.page-login {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #ede9fe 0%, #faf7ff 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+.top-banner {
+    background: var(--roxo-escuro);
+    color: white;
+    padding: 36px 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(107, 33, 168, 0.2);
+}
+
+.top-banner .main-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.top-banner h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.top-banner .slogan {
+    font-size: 15px;
+    opacity: 0.85;
+}
+
+.login-wrapper {
+    padding: 24px;
+    max-width: 440px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.login-card {
+    background: var(--fundo-card);
+    border-radius: var(--raio);
+    padding: 28px 24px;
+    box-shadow: var(--sombra);
+}
+
+.login-card h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: var(--texto-escuro);
+}
+
+.intro-text {
+    color: var(--texto-claro);
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--texto-escuro);
+}
+
+.form-group label span {
+    font-weight: 400;
+    color: var(--texto-claro);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid var(--roxo-borda);
+    border-radius: 8px;
+    transition: border-color 0.2s;
+    background: #fcfbff;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--roxo-medio);
+    background: #ffffff;
+}
+
+.hint {
+    font-size: 12px;
+    color: var(--texto-claro);
+    margin-top: 6px;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.icon-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border:

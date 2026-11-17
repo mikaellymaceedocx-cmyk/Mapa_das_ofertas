@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa das Ofertas — Entrar</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-login">
+    <div class="top-banner">
+        <i class="fas fa-map-marked-alt main-icon"></i>
+        <h1>Mapa das Ofertas</h1>
+        <p class="slogan">Encontre. Selecione. Ganhe.</p>
+    </div>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <h2>Entrar</h2>
+            <p class="intro-text">Conecte sua aplicação da Shopee Affiliate Open API. Não há cadastro: estes dados são a sua identificação.</p>
+
+            <div class="form-group">
+                <label>Nome <span>(opcional)</span></label>
+                <input type="text" id="user-name" placeholder="Seu nome ou nome da sua loja">
+                <p class="hint">Aparece no topo da página. Fica salvo apenas neste navegador.</p>
+            </div>
+
+            <div class="form-group">
+                <label>App ID</label>
+                <input type="text" id="app-id" placeholder="Credencial / App ID da sua aplicação">
+            </div>
+
+            <div class="form-group">
+                <label>Secret</label>
+                <div class="input-with-icon">
+                    <input type="password" id="app-secret" placeholder="Secret privado da aplicação">
+                    <button type="button" id="toggle-secret" class="icon-btn">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>URL da API (GraphQL)</label>
+                <input type="text" id="api-url" placeholder="https://...">
+                <p class="hint">A mesma URL do GraphiQL oficial onde você testou productOfferV2.</p>
+            </div>
+
+            <div class="info-box">
+                <p><i class="fas fa-shield-alt"></i> Você continua conectado até clicar em <strong>Sair</strong> — recarregar a página não desconecta. Em computador compartilhado, use Sair ao terminar.</p>
+            </div>
+
+            <button class="btn primary" onclick="salvarCredenciaisEEntrar()">
+                <i class="fas fa-door-open"></i> Entrar e Acessar
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa das Ofertas — Mineração</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-dashboard">
+    <header class="top-header">
+        <div class="header-left">
+            <i class="fas fa-map-marked-alt logo"></i>
+            <h1>Mapa das Ofertas</h1>
+        </div>
+        <div class="header-right">
+            <span id="user-display" class="user-name"></span>
+            <button class="btn-icon" onclick="sair()">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <a href="dashboard.html" class="nav-link active" data-page="mineracao">
+            <i class="fas fa-compass"></i> Mineração
+        </a>
+        <a href="#" class="nav-link" data-page="extras">
+            <i class="fas fa-coins"></i> Comissões Extra
+        </a>
+        <a href="#" class="nav-link" data-page="conta">
+            <i class="fas fa-cog"></i> Configurações
+        </a>
+    </nav>
+
+    <main class="content">
+        <section class="search-section">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Buscar produtos na Shopee...">
+                <button class="btn search-btn" onclick="buscarOfertas()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </section>
+
+        <section class="filters-section">
+            <h3 class="section-title"><i class="fas fa-filter"></i> Filtros de Busca</h3>
+            
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="poucos-afiliados">
+                    <i class="fas fa-users-slash"></i> Poucos Afiliados
+                </button>
+                <button class="filter-btn" data-filter="bem-avaliados">
+                    <i class="fas fa-star"></i> Bem Avaliados
+                </button>
+                <button class="filter-btn" data-filter="mais-vendidos">
+                    <i class="fas fa-fire"></i> Mais Vendidos
+                </button>
+                <button class="filter-btn" data-filter="maior-comissao">
+                    <i class="fas fa-percentage"></i> Maior Comissão
+                </button>
+            </div>
+
+            <div class="price-filters">
+                <button class="price-btn" data-price="20">Até R$ 20</button>
+                <button class="price-btn" data-price="50">Até R$ 50</button>
+                <button class="price-btn" data-price="100">Até R$ 100</button>
+            </div>
+
+            <div class="sort-control">
+                <label>Ordenar por:</label>
+                <select id="sort-by">
+                    <option value="afiliados">Menos Afiliados</option>
+                    <option value="comissao">Maior Comissão</option>
+                    <option value="vendas">Mais Vendidos</option>
+                    <option value="preco">Menor Preço</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="results-section">
+            <div class="results-header">
+                <h3>Oportunidades Encontradas</h3>
+                <span id="result-count">0 produtos</span>
+            </div>
+
+            <div id="products-grid" class="products-grid">
+                <div class="empty-state">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h4>Pronto para garimpar?</h4>
+                    <p>Clique em buscar para encontrar produtos com poucos afiliados divulgando</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="extras-section" id="extras-section" style="display: none;">
+            <div class="featured-header">
+                <i class="fas fa-crown featured-icon"></i>
+                <h3>Comissões Especiais</h3>
+                <p>Produtos selecionados que pagam ainda mais</p>
+            </div>
+            <div id="extras-grid" class="products-grid">
+                <div class="empty-state">
+                    <i class="fas fa-coins"></i>
+                    <p>Em breve: produtos com comissão extra em destaque</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa das Ofertas — Criar Oferta</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-offer">
+    <header class="simple-header">
+        <button class="back-btn" onclick="voltarParaDashboard()">
+            <i class="fas fa-chevron-left"></i> Voltar
+        </button>
+        <h1>Criar Oferta</h1>
+        <div></div>
+    </header>
+
+    <main class="offer-content">
+        <section class="product-card">
+            <div class="product-image">
+                <img id="produto-imagem" src="" alt="">
+            </div>
+            <div class="product-info">
+                <h2 id="produto-nome">Nome do Produto</h2>
+                <div class="price-row">
+                    <span class="price" id="produto-preco">R$ 0,00</span>
+                    <span class="discount" id="produto-desconto">0% OFF</span>
+                </div>
+                <div class="meta-row">
+                    <span class="commission"><i class="fas fa-coins"></i> Comissão: <strong id="produto-comissao">0%</strong></span>
+                    <span class="affiliates"><i class="fas fa-users-slash"></i> Afiliados: <strong id="produto-afiliados">0</strong></span>
+                </div>
+                <div class="earning-row">
+                    Você ganha: <strong id="produto-ganho">R$ 0,00</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="link-section">
+            <h3><i class="fas fa-link"></i> Link do Produto</h3>
+            <div class="link-row">
+                <input type="text" id="produto-link" readonly value="">
+                <button class="btn copy-btn" onclick="copiarLink()">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+            </div>
+        </section>
+
+        <section class="ai-section">
+            <h3><i class="fas fa-robot"></i> Vídeos com IA</h3>
+            <p class="section-note">Palavras-chave para criar ou buscar vídeos relacionados:</p>
+            <div id="keywords-box" class="keywords-container">
+                <span class="keyword">carregando...</span>
+            </div>
+            <button class="btn secondary" onclick="gerarPalavras()">
+                <i class="fas fa-sync-alt"></i> Gerar Novas Palavras
+            </button>
+        </section>
+
+        <section class="caption-section">
+            <h3><i class="fas fa-pen-alt"></i> Legenda + Hashtags</h3>
+            <textarea id="caption-text" readonly placeholder="Clique em gerar para criar sua legenda..."></textarea>
+            <div class="caption-buttons">
+                <button class="btn secondary" onclick="gerarLegenda()">
+                    <i class="fas fa-magic"></i> Gerar Legenda
+                </button>
+                <button class="btn primary" onclick="copiarLegenda()">
+                    <i class="fas fa-copy"></i> Copiar Legenda
+                </button>
+            </div>
+        </section>
+
+        <section class="publish-section">
+            <h3><i class="fas fa-share-alt"></i> Publicar e Compartilhar</h3>
+            <button class="btn publish-main" onclick="publicarShopeeVideo()">
+                <i class="fas fa-video"></i>
+                <div class="publish-text">
+                    <strong>Publicar na Shopee Vídeo</strong>
+                    <span>Legenda + hashtags prontas</span>
+                </div>
+            </button>
+            <div class="secondary-actions">
+                <button class="btn action-btn" onclick="compartilharWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="btn action-btn" onclick="baixarImagem()">
+                    <i class="fas fa-download"></i> Baixar Foto
+                </button>
+                <button class="btn action-btn" onclick="verNaShopee()">
+                    <i class="fas fa-external-link-alt"></i> Ver na Shopee
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
