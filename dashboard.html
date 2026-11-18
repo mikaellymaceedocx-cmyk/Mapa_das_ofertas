@@ -1,0 +1,83 @@
+<!-- CABEÇALHO AJUSTADO -->
+<header style="background: linear-gradient(135deg, #512DA8, #673AB7); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-size: 13px; opacity: 0.9;">Encontre · Compartilhe · Ganhe</div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="text-align: right;">
+            <div style="font-weight: 600; font-size: 14px;" id="nomeUsuario">Seu Nome</div>
+            <div style="font-size: 11px; opacity: 0.8;">Afiliada Shopee</div>
+        </div>
+        <button onclick="sairDoSistema()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 4px; font-size: 13px; cursor: pointer;">Sair</button>
+    </div>
+</header>
+
+<!-- TÍTULO PRINCIPAL -->
+<div style="background: linear-gradient(135deg, #512DA8, #673AB7); color: white; padding: 10px 20px 20px; text-align: center;">
+    <h1 style="font-size: 24px; margin: 0;">💜 Mapa das Ofertas</h1>
+    <p style="font-size: 14px; opacity: 0.9; margin: 6px 0 0;">As melhores oportunidades para você vender mais e ganhar comissões</p>
+</div>
+
+<!-- BARRA DE BUSCA -->
+<div style="padding: 15px 20px; background: white;">
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <input type="text" placeholder="Buscar ofertas..." style="flex: 1; padding: 12px 16px; border: 1px solid #E0E0E0; border-radius: 8px; font-size: 15px;">
+        <button style="background: #673AB7; color: white; border: none; padding: 12px 16px; border-radius: 8px; cursor: pointer;">🔍</button>
+    </div>
+</div>
+
+<!-- ABAS DE FILTRO -->
+<div style="padding: 0 20px 15px; background: white;">
+    <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px;">
+        <button style="background: #673AB7; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; white-space: nowrap;">🔥 Todos</button>
+        <button style="background: #F3E5F5; color: #673AB7; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; white-space: nowrap;">🌱 Poucos Afiliados</button>
+        <button style="background: #F3E5F5; color: #673AB7; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; white-space: nowrap;">🛒 Mais Vendidos</button>
+        <button style="background: #F3E5F5; color: #673AB7; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; white-space: nowrap;">⭐ Bem Avaliados</button>
+        <button style="background: #F3E5F5; color: #673AB7; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; white-space: nowrap;">💰 Maior Comissão</button>
+    </div>
+</div>
+
+<!-- FILTRO POR NICHO -->
+<div style="margin: 0 20px 15px; background: white; padding: 15px; border-radius: 10px;">
+    <h3 style="font-size: 15px; margin: 0 0 10px; color: #333;">Filtrar por Nicho</h3>
+    <select style="width: 100%; padding: 10px; border: 1px solid #E0E0E0; border-radius: 6px; font-size: 14px;">
+        <option>Todos os nichos</option>
+        <option>🏠 Casa e Cozinha</option>
+        <option>💄 Beleza</option>
+        <option>🍼 Maternidade e Bebê</option>
+        <option>👗 Moda</option>
+        <option>🐾 Pet Shop</option>
+        <option>📱 Eletrônicos</option>
+        <option>⚽ Esporte</option>
+    </select>
+</div>
+
+<!-- TÍTULO DE OFERTAS E CONTAGEM -->
+<div style="padding: 0 20px 10px; display: flex; justify-content: space-between; align-items: center;">
+    <h2 style="font-size: 18px; color: #673AB7; margin: 0;">🔥 Todas as Ofertas do Dia</h2>
+    <span style="font-size: 14px; color: #888;" id="contagemOfertas">50 ofertas disponíveis</span>
+</div>
+<hr style="border: none; border-top: 2px solid #673AB7; margin: 0 20px 15px;">
+
+<!-- ÁREA ONDE OS PRODUTOS DA API VÃO APARECER -->
+<div id="listaProdutos" style="padding: 0 20px 40px;">
+    <div style="text-align: center; padding: 40px 20px; color: #777;">
+        <p>🔄 Carregando ofertas da Shopee...</p>
+        <p style="font-size: 13px; margin-top: 8px;">Configure sua API para ver os produtos reais aqui</p>
+    </div>
+</div>
+
+<script>
+// Pegar nome do usuário que veio do login
+const nomeSalvo = localStorage.getItem('nomeAfiliado') || 'Afiliada';
+document.getElementById('nomeUsuario').textContent = nomeSalvo;
+
+// Função de sair
+function sairDoSistema() {
+    if (confirm('Deseja sair da sua conta?')) {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+}
+
+// Aqui é onde os produtos da API da Shopee serão inseridos automaticamente
+// quando sua chave de API estiver configurada
+</script>
