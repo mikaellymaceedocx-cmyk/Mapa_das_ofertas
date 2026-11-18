@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa das Ofertas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f5f5f5; min-height: 100vh; }
+        
+        .toast {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333; color: white; padding: 12px 24px;
+            border-radius: 8px; font-size: 14px; z-index: 999;
+            opacity: 0; transition: all 0.3s;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        
+        /* === CABEÇALHO ROXO — NOSSA COR REAL === */
+        .top-bar {
+            background: linear-gradient(135deg, #512DA8, #673AB7);
+            color: white; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logout-link { color: white; text-decoration: none; font-size: 14px; }
+        
+        header {
+            background: linear-gradient(135deg, #512DA8, #673AB7);
+            color: white; padding: 0 20px 20px;
+        }
+        .logo-title { font-size: 22px; font-weight: 700; margin: 10px 0 15px; }
+        .search-container { display: flex; gap: 10px; }
+        .search-input { flex: 1; padding: 12px 16px; border: none; border-radius: 8px; font-size: 15px; }
+        .search-btn { background: white; color: #673AB7; border: none; padding: 0 16px; border-radius: 8px; cursor: pointer; }
+        
+        .category-tabs {
+            background: #F3E5F5; padding: 12px 20px; display: flex; gap: 8px; overflow-x: auto;
+        }
+        .cat-tab {
+            padding: 10px 16px; border-radius: 20px; font-size: 14px; cursor: pointer;
+            background: white; color: #673AB7; border: 2px solid transparent;
+        }
+        .cat-tab.active { background: #673AB7; color: white; border-color: #673AB7; }
+        
+        main { padding: 20px; }
+        
+        .section-box {
+            background: white; border-radius: 10px; padding: 16px; margin-bottom: 15px;
+        }
+        .section-title { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+        .select-box {
+            width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px;
+        }
+        
+        .offers-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin: 20px 0 12px; padding-bottom: 8px;
+            border-bottom: 2px solid #673AB7;
+        }
+        .offers-title { font-size: 16px; font-weight: 700; color: #673AB7; }
+        .offers-count { font-size: 13px; color: #888; }
+        
+        .products-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
+        }
+        .product-card {
+            background: white; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .product-image {
+            width: 100%; height: 140px; position: relative; overflow: hidden;
+        }
+        .product-image img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .commission-badge {
+            position: absolute; top: 8px; left: 8px;
+            background: #673AB7; color: white; padding: 4px 10px;
+            font-size: 12px; font-weight: 600; border-radius: 4px;
+        }
+        .new-badge {
+            position: absolute; top: 8px; right: 8px;
+            background: #9C27B0; color: white; font-size: 10px;
+            padding: 2px 6px; border-radius: 3px; font-weight: bold;
+        }
+        .product-info { padding: 12px; }
+        .product-name { font-size: 14px; color: #333; margin-bottom: 6px; line-height: 1.4; }
+        .product-store { font-size: 12px; color: #777; margin-bottom: 8px; }
+        .product-price { font-size: 18px; font-weight: 700; color: #222; margin-bottom: 6px; }
+        .product-meta { font-size: 12px; color: #666; margin-bottom: 8px; }
+        .earnings {
+            background: #F3E5F5; color: #512DA8; padding: 6px 10px;
+            border-radius: 4px; font-size: 13px; margin-bottom: 10px;
+        }
+        .btn-create {
+            width: 100%; padding: 10px; background: #673AB7; color: white;
+            border: none; border-radius: 6px; font-size: 14px; font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-create:hover { opacity: 0.9; }
+        
+        @media (max-width: 360px) {
+            .products-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- === CABEÇALHO ROXO === -->
+    <div class="top-bar">
+        <span>Encontre. Compartilhe. Ganhe...</span>
+        <span>DAILYOFERTAS <a href="#" class="logout-link" onclick="return false;">Sair</a></span>
+    </div>
+
+    <header>
+        <h1 class="logo-title">💜 Radar das Comissões</h1>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Buscar ofertas na Shopee">
+            <button class="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+    </header>
+
+    <div class="category-tabs">
+        <div class="cat-tab active" onclick="trocarAba(this)">🔥 Todos</div>
+        <div class="cat-tab" onclick="trocarAba(this)">🌱 Poucos Afiliados</div>
+        <div class="cat-tab" onclick="trocarAba(this)">🛒 Mais Vendidos</div>
+        <div class="cat-tab" onclick="trocarAba(this)">💰 Maior Comissão</div>
+    </div>
+
+    <main>
+        <div class="section-box">
+            <div class="section-title">Filtrar por Nicho</div>
+            <select class="select-box">
+                <option>Todos os nichos</option>
+                <option>Casa e cozinha</option>
+                <option>Beleza</option>
+                <option>Mãe e bebê</option>
+                <option>Moda</option>
+                <option>Pet shop</option>
+            </select>
+        </div>
+
+        <div class="offers-header">
+            <span class="offers-title">🔥 Todas as Ofertas</span>
+            <span class="offers-count">20 ofertas encontradas</span>
+        </div>
+
+        <div class="products-grid" id="produtos-container"></div>
+    </main>
+
+    <script>
+        function mostrarMsg(texto) {
+            const t = document.getElementById('toast');
+            t.textContent = texto; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        // === PRODUTOS — TUDO IGUAL ===
+        const produtos = [
+            {id:1,nome:"Rack com Painel para TV até 65 Polegadas Life Caemmun",loja:"Caemmun Movelaria",preco:805.49,comissao:13,ganho:104.71,avaliacao:4.8,vendidos:59,imagem:"https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&h=400&fit=crop",novo:true},
+            {id:2,nome:"Kit 2 Cadeira Orgânica Manuela sala de jantar",loja:"Brunaldi Decor",preco:349.94,comissao:13,ganho:45.49,avaliacao:4.8,vendidos:59,imagem:"https://images.unsplash.com/photo-1617806118435-027860432642?w=600&h=400&fit=crop",desconto:30},
+            {id:3,nome:"Kit Festa Cubo 4 Peças (dourado, rose gold, preto)",loja:"Festa Perfeita",preco:299.20,comissao:14,ganho:41.89,avaliacao:4.9,vendidos:120,imagem:"https://images.unsplash.com/photo-1558642084-fd07fae5855f?w=600&h=400&fit=crop",desconto:12},
+            {id:4,nome:"Poltrona Decorativa Com Almofada Amamentação",loja:"Conforto Lar",preco:273.67,comissao:13,ganho:35.58,avaliacao:4.7,vendidos:87,imagem:"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=400&fit=crop",desconto:12,novo:true},
+            {id:5,nome:"Mop Spray Refil de Microfibra com Reservatório",loja:"Casa Limpa",preco:89.90,comissao:13,ganho:11.69,avaliacao:4.8,vendidos:3200,imagem:"https://images.unsplash.com/photo-1585771724682-556a8f837a02?w=600&h=400&fit=crop"},
+            {id:6,nome:"Creme Hidratante Corporal 500ml Pele Macia",loja:"Beleza Natural",preco:49.90,comissao:18,ganho:8.98,avaliacao:4.9,vendidos:240,imagem:"https://images.unsplash.com/photo-1556227702-d1e4e7b5c22d?w=600&h=400&fit=crop"},
+            {id:7,nome:"Bolsa Transversal Couro Sintético Feminina",loja:"Estilo Moda",preco:89.90,comissao:15,ganho:13.49,avaliacao:4.7,vendidos:156,imagem:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&h=400&fit=crop"},
+            {id:8,nome:"Conjunto 3 Potes Herméticos Plástico Cores",loja:"Organize Bem",preco:39.90,comissao:20,ganho:7.98,avaliacao:4.8,vendidos:89,imagem:"https://images.unsplash.com/photo-1631889799483-9782d6f40e14?w=600&h=400&fit=crop"},
+            {id:9,nome:"Tênis Esportivo Feminino Confortável",loja:"Movimento Esportes",preco:129.90,comissao:12,ganho:15.59,avaliacao:4.6,vendidos:450,imagem:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=400&fit=crop"},
+            {id:10,nome:"Brinquedo Educativo Montessori Criança 3+",loja:"Mundo Kids",preco:59.90,comissao:16,ganho:9.58,avaliacao:4.9,vendidos:45,imagem:"https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=600&h=400&fit=crop"},
+            {id:11,nome:"Ração Seca Cães Adultos Frango 15kg",loja:"Pet Amor",preco:149.90,comissao:8,ganho:11.99,avaliacao:4.8,vendidos:320,imagem:"https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=400&fit=crop"},
+            {id:12,nome:"Panela de Pressão Elétrica 5L Antiaderente",loja:"Cozinha Feliz",preco:199.90,comissao:10,ganho:19.99,avaliacao:4.7,vendidos:580,imagem:"https://images.unsplash.com/photo-1585664811087-47f65abbad66?w=600&h=400&fit=crop"},
+            {id:13,nome:"Fone Bluetooth Sem Fio Cancelamento Ruído",loja:"Tech Mundo",preco:149.90,comissao:11,ganho:16.49,avaliacao:4.5,vendidos:890,imagem:"https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&h=400&fit=crop"},
+            {id:14,nome:"Vestido Midi Floral Verão - Várias Cores",loja:"Moda Bella",preco:89.90,comissao:15,ganho:13.49,avaliacao:4.6,vendidos:112,imagem:"https://images.unsplash.com/photo-1572804013309-59a88b7e92a1?w=600&h=400&fit=crop"},
+            {id:15,nome:"Travesseiro de Amamentação Ajustável Conforto",loja:"Mãe Conforto",preco:119.90,comissao:16,ganho:19.18,avaliacao:4.8,vendidos:96,imagem:"https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=600&h=400&fit=crop"},
+            {id:16,nome:"Kit 6 Copos Vidro Temperado Transparente",loja:"Vidro Casa",preco:44.90,comissao:18,ganho:8.08,avaliacao:4.8,vendidos:180,imagem:"https://images.unsplash.com/photo-1603484581950-0f76329c10bb?w=600&h=400&fit=crop"},
+            {id:17,nome:"Suporte para Celular Veículo 360 Graus",loja:"Auto Tech",preco:35.90,comissao:25,ganho:8.98,avaliacao:4.7,vendidos:245,imagem:"https://images.unsplash.com/photo-1542750622-cd1935e35426?w=600&h=400&fit=crop"},
+            {id:18,nome:"Jogo de Lençol Casal 4 Peças Estampado",loja:"Sonho Lar",preco:79.90,comissao:15,ganho:11.99,avaliacao:4.6,vendidos:310,imagem:"https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=600&h=400&fit=crop"},
+            {id:19,nome:"Shampoo e Condicionador Kit 2x400ml Nutritivo",loja:"Beleza Capilar",preco:54.90,comissao:17,ganho:9.33,avaliacao:4.8,vendidos:520,imagem:"https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=600&h=400&fit=crop"},
+            {id:20,nome:"Bola de Futebol Campo Couro Sintético Resistente",loja:"Esporte Total",preco:49.90,comissao:16,ganho:7.98,avaliacao:4.7,vendidos:145,imagem:"https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&h=400&fit=crop"}
+        ];
+
+        function renderizar() {
+            const container = document.getElementById('produtos-container');
+            container.innerHTML = '';
+            produtos.forEach(p => {
+                const desconto = p.desconto ? ` <span style="color:#C62828">-${p.desconto}%</span>` : '';
+                const novidade = p.novo ? '<span class="new-badge">LANÇAMENTO</span>' : '';
+                container.innerHTML += `
+                    <div class="product-card">
+                        <div class="product-image">
+                            ${novidade}
+                            <img src="${p.imagem}" alt="${p.nome}" loading="lazy">
+                            <span class="commission-badge">Comissão ${p.comissao}%</span>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">${p.nome}</h3>
+                            <p class="product-store">${p.loja}</p>
+                            <p class="product-price">R$ ${p.preco.toFixed(2).replace('.', ',')}${desconto}</p>
+                            <p class="product-meta">⭐ ${p.avaliacao} · ${p.vendidos} vendidos</p>
+                            <p class="earnings">Você ganha ~R$ ${p.ganho.toFixed(2).replace('.', ',')}</p>
+                            <button class="btn-create" onclick="mostrarMsg('Abrindo oferta...')">CRIAR OFERTA</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function trocarAba(el) {
+            document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            mostrarMsg('Carregando...');
+        }
+
+        renderizar();
+    </script>
+</body>
+</html>
