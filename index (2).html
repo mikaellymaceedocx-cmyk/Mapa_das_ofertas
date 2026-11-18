@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar das Comissões — Ofertas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-dashboard">
+
+    <!-- 🔶 CABEÇALHO -->
+    <header class="top-header">
+        <div class="header-top-bar">
+            <span class="slogan">Encontre. Compartilhe. Ganhe...</span>
+            <div class="user-area">
+                <span class="user-badge">D</span>
+                <span class="user-name">DAILYOFERTAS</span>
+                <button class="logout-btn" onclick="sairDoSistema()">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </div>
+
+        <div class="brand-title">
+            <i class="fas fa-shopping-cart"></i>
+            <h1>Radar das Comissões</h1>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Buscar ofertas na Shopee">
+            <button class="search-btn" onclick="buscarOfertas()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 📑 ABAS PRINCIPAIS -->
+    <nav class="main-tabs">
+        <button class="tab active" onclick="mudarAba('ofertas')" id="tab-ofertas">
+            <i class="fas fa-tags"></i> Ofertas
+        </button>
+        <button class="tab" onclick="mudarAba('relatorios')" id="tab-relatorios">
+            <i class="fas fa-chart-bar"></i> Relatórios
+        </button>
+        <button class="tab" onclick="mudarAba('conta')" id="tab-conta">
+            <i class="fas fa-user-circle"></i> Conta
+        </button>
+    </nav>
+
+    <main class="content-wrapper">
+
+        <!-- ========================================== -->
+        <!-- 🎯 ABA: OFERTAS -->
+        <!-- ========================================== -->
+        <section id="aba-ofertas" class="tab-content active">
+
+            <!-- 📦 NICHO -->
+            <div class="filter-card">
+                <h3 class="card-heading"><i class="fas fa-layer-group"></i> Nicho</h3>
+                <select class="full-select" id="nicho-select" onchange="filtrarPorNicho()">
+                    <option selected>Todos os nichos</option>
+                    <option value="bebe">🍼 Bebês</option>
+                    <option value="casa">🏠 Casa e Decoração</option>
+                    <option value="beleza">💄 Beleza</option>
+                    <option value="moda">👗 Moda</option>
+                    <option value="tecnologia">📱 Tecnologia</option>
+                </select>
+            </div>
+
+            <!-- ⚙️ FILTROS — CADA UM ABRA SUA ABA -->
+            <div class="filter-card">
+                <h3 class="card-heading"><i class="fas fa-sliders-h"></i> Filtrar por</h3>
+                <div class="filter-tags">
+                    <button class="tag-btn active" onclick="abrirFiltro('todas')" id="filtro-todas">Ofertas</button>
+                    <button class="tag-btn" onclick="abrirFiltro('avaliadas')" id="filtro-avaliadas">⭐ Bem Avaliados</button>
+                    <button class="tag-btn" onclick="abrirFiltro('vendidas')" id="filtro-vendidas">🛒 Mais Vendidos</button>
+                    <button class="tag-btn" onclick="abrirFiltro('comissao')" id="filtro-comissao">💰 Maior Comissão</button>
+                    <button class="tag-btn" onclick="abrirFiltro('poucos')" id="filtro-poucos">👤 Poucos Afiliados</button>
+                </div>
+
+                <div class="sort-line">
+                    <label>Ordenar por:</label>
+                    <select class="sort-select" id="ordenar-por">
+                        <option selected>Maior comissão (R$)</option>
+                        <option>Poucos afiliados</option>
+                        <option>Mais vendidos</option>
+                        <option>Menor preço</option>
+                    </select>
+                </div>
+                <p class="results-count"><strong id="qtd-ofertas">50</strong> ofertas encontradas</p>
+            </div>
+
+            <!-- 🛍️ LISTA DE PRODUTOS — DINÂMICA POR FILTRO -->
+            <div class="offers-section" id="area-ofertas">
+                <h2 class="section-title" id="titulo-secao">OFERTAS DO DIA</h2>
+                <div class="products-grid" id="grade-produtos">
+                    <!-- Os produtos são carregados aqui automaticamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 📊 ABA: RELATÓRIOS -->
+        <!-- ========================================== -->
+        <section id="aba-relatorios" class="tab-content">
+            <div class="page-intro">
+                <h2>📊 Relatórios de Desempenho</h2>
+                <p>Acompanhe seus resultados como afiliado</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card"><h3>Cliques</h3><p class="stat-value">1.247</p><span class="up">↑ +15%</span></div>
+                <div class="stat-card"><h3>Vendas</h3><p class="stat-value">38</p><span class="up">↑ +8%</span></div>
+                <div class="stat-card"><h3>Comissões</h3><p class="stat-value">R$ 1.245,90</p><span class="up">↑ +22%</span></div>
+                <div class="stat-card"><h3>Conversão</h3><p class="stat-value">3,05%</p><span>Meta: 3%</span></div>
+            </div>
+            <div class="report-box">
+                <h3>📈 Resumo</h3>
+                <p>Seu desempenho está <strong style="color:#22c55e;">acima da média</strong>! Destaque para produtos com poucos afiliados — é onde você tem mais vantagem.</p>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 👤 ABA: CONTA -->
+        <!-- ========================================== -->
+        <section id="aba-conta" class="tab-content">
+            <div class="page-intro"><h2>Minha Conta</h2><p>Dados e configurações</p></div>
+            <div class="profile-card">
+                <div class="profile-header">
+                    <span class="profile-initial">D</span>
+                    <div><h3>DAILYOFERTAS</h3><p>Afiliado desde: Nov 2026</p></div>
+                </div>
+                <div class="profile-stats">
+                    <div class="profile-stat"><strong>Nível</strong><span>Prata</span></div>
+                    <div class="profile-stat"><strong>Ofertas</strong><span>24</span></div>
+                    <div class="profile-stat"><strong>Saldo</strong><span style="color:#f57c00; font-weight:bold;">R$ 452,80</span></div>
+                </div>
+            </div>
+            <div class="settings-list">
+                <div class="setting-item"><span><i class="fas fa-key"></i> API Shopee</span><i class="fas fa-chevron-right"></i></div>
+                <div class="setting-item"><span><i class="fas fa-bell"></i> Notificações</span><i class="fas fa-chevron-right"></i></div>
+                <div class="setting-item"><span><i class="fas fa-download"></i> Exportar dados</span><i class="fas fa-chevron-right"></i></div>
+                <div class="setting-item"><span><i class="fas fa-question-circle"></i> Ajuda</span><i class="fas fa-chevron-right"></i></div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ✨ MODAL: CRIAR OFERTA (Abre ao clicar "CRIAR OFERTA") -->
+        <!-- ========================================== -->
+        <div id="modal-criar-oferta" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <button class="fechar-modal" onclick="fecharModal()">×</button>
+                <h2 id="modal-produto-nome">Criar Oferta</h2>
+
+                <!-- 📤 OPÇÕES DE COMPARTILHAMENTO -->
+                <div class="opcoes-compartilhamento">
+                    <h3>Escolha onde publicar:</h3>
+                    <div class="opcao-card" onclick="selecionarCanal('whatsapp')" id="opcao-whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                        <h4>Grupo de WhatsApp</h4>
+                        <p>Compartilhe com seus grupos</p>
+                    </div>
+                    <div class="opcao-card" onclick="selecionarCanal('shopee-video')" id="opcao-shopee-video">
+                        <i class="fas fa-video"></i>
+                        <h4>Shopee Vídeo</h4>
+                        <p>Post automático no Shopee Vídeo</p>
+                    </div>
+                </div>
+
+                <!-- ✍️ ÁREA DE LEGENDA E HASHTAGS -->
+                <div id="area-conteudo" style="display: none; margin-top: 24px;">
+                    <h3>✍️ Conteúdo da publicação</h3>
+                    
+                    <label>Nome do Produto:</label>
+                    <input type="text" id="produto-nome-exibicao" readonly class="input-leitura">
+                    
+                    <label>Preço comissão:</label>
+                    <input type="text" id="produto-valor-exibicao" readonly class="input-leitura">
+                    
+                    <label>📝 Legenda (você pode editar):</label>
+                    <textarea id="campo-legenda" rows="5" placeholder="A legenda aparece aqui..."></textarea>
+                    
+                    <label>🏷️ Hashtags sugeridas (seguras conforme regras da Shopee):</label>
+                    <textarea id="campo-hashtags" rows="3" readonly class="input-leitura"></textarea>
+                    
+                    <p class="aviso-hashtag"><i class="fas fa-shield-alt"></i> Hashtags verificadas — em conformidade com as diretrizes da Shopee ✅</p>
+                    
+                    <div class="botoes-acao">
+                        <button class="btn-secundario" onclick="copiarConteudo()">
+                            <i class="fas fa-copy"></i> Copiar Tudo
+                        </button>
+                        <button class="btn-principal" id="btn-publicar" onclick="publicar()">
+                            <i class="fas fa-paper-plane"></i> Publicar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // =================================================
+        // 📦 BANCO DE DADOS DE PRODUTOS
+        // =================================================
+        const produtos = [
+            {
+                id: 1,
+                nome: "Rack com Painel para TV até 65 Polegadas Life Caemmun",
+                preco: "R$ 805,49",
+                imagem: "https://via.placeholder.com/600x400/e8e8e8/333?text=Rack+TV",
+                comissao: "13%",
+                ganho: "~R$ 104,71",
+                avaliacao: "4,8",
+                vendas: "",
+                nicho: "casa",
+                destaque: "",
+                categoria: "decoração"
+            },
+            {
+                id: 2,
+                nome: "Kit 2 Cadeira Orgânica Manuela sala de jantar",
+                preco: "R$ 349,94",
+                imagem: "https://via.placeholder.com/600x400/f0f0f0/333?text=Cadeiras",
+                comissao: "13%",
+                ganho: "~R$ 45,49",
+                avaliacao: "4,8",
+                vendas: "59 vendidos",
+                desconto: "-30%",
+                nicho: "casa",
+                destaque: "",
+                categoria: "moveis"
+            },
+            {
+                id: 3,
+                nome: "Kit Festa Cubo 4 Peças (dourado, rose gold, preto)",
+                preco: "R$ 299,20",
+                imagem: "https://via.placeholder.com/600x400/faf0f5/333?text=Festa",
+                comissao: "14%",
+                ganho: "~R$ 41,89",
+                avaliacao: "4,9",
+                vendas: "32 vendidos",
+                desconto: "-12%",
+                nicho: "casa",
+                destaque: "",
+                categoria: "festas"
+            },
+            {
+                id: 4,
+                nome: "Poltrona Decorativa Com Almofada Amamentação",
+                preco: "R$ 273,67",
+                imagem: "https://via.placeholder.com/600x400/fff8f0/333?text=Poltrona",
+                comissao: "13%",
+                ganho: "~R$ 35,58",
+                avaliacao: "5,0",
+                vendas: "18 vendidos",
+                desconto: "-12%",
+                nicho: "bebe",
+                destaque: "LANÇAMENTO!",
+                categoria: "amamentacao"
+            },
+            {
+                id: 5,
+                nome: "Mamadeira Anticólica 240ml Silicone",
+                preco: "R$ 39,90",
+                imagem: "https://via.placeholder.com/600x400/fff/333?text=Mamadeira",
+                comissao: "12%",
+                ganho: "~R$ 4,79",
+                avaliacao: "4,9",
+                vendas: "230 vendidos",
+                nicho: "bebe",
+                destaque: "",
+                categoria: "mamadeira"
+            },
+            {
+                id: 6,
+                nome: "Carrinho de Bebê Dobrável com Capa de Chuva",
+                preco: "R$ 459,90",
+                imagem: "https://via.placeholder.com/600x400/f8f8f8/333?text=Carrinho+Bebê",
+                comissao: "11%",
+                ganho: "~R$ 50,59",
+                avaliacao: "4,7",
+                vendas: "87 vendidos",
+                nicho: "bebe",
+                destaque: "",
+                categoria: "carrinho_bebe"
+            }
+        ];
+
+        // =================================================
+        // 🏷️ GERADOR DE HASHTAGS SEGURAS — Por Categoria
+        // =================================================
+        const hashtagsPorCategoria = {
+            mamadeira: {
+                legenda: "✨ Mamadeira Anticólica — conforto e segurança para seu bebê!\n✅ Sem BPA • Silicone macio • Fácil de limpar\n💝 Perfeita para o dia a dia e viagens\n👉 Garanta a sua com desconto!",
+                tags: "#Mamadeira #MamadeiraAnticolica #AlimentacaoBebe #ProdutosParaBebe #CuidaDoBebe #Maternidade #BebeSeguro #SiliconeParaBebe #FamiliaFeliz #AmorDeMae"
+            },
+            carrinho_bebe: {
+                legenda: "👶 Carrinho de Bebê Dobrável — praticidade que você merece!\n✅ Leve e dobrável • Inclui capa de chuva • Seguro e confortável\n💝 Ideal para passeios com seu pequeno\n👉 Confira o preço especial!",
+                tags: "#CarrinhoDeBebe #PasseioComBebe #ProdutosInfantis #MaternidadePratica #BebeConfortavel #
