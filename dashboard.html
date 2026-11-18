@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa das Ofertas</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+:root{--roxo:#673AB7;--roxo2:#512DA8;--lilas:#F3E5F5;--fundo:#f5f5f5;--texto:#26222b;--muted:#77717d}
+body{background:var(--fundo);min-height:100vh;color:var(--texto)}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#29252d;color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;z-index:9999;opacity:0;transition:.25s}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* CABEÇALHO */
+.top-bar{background:linear-gradient(135deg,var(--roxo2),var(--roxo));color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px}
+.top-bar strong{font-weight:800}
+.logout-link{color:#fff;text-decoration:none}
+header{background:linear-gradient(135deg,var(--roxo2),var(--roxo));color:#fff;padding:0 20px 20px}
+.brand{font-size:22px;font-weight:800;margin:10px 0 6px}
+.subtitle{font-size:14px;opacity:.94;margin-bottom:16px}
+.search-container{display:flex;gap:10px}
+.search-input{flex:1;padding:13px 16px;border:0;border-radius:10px;font-size:15px;outline:none}
+.search-btn{background:#fff;color:var(--roxo);border:0;width:52px;border-radius:10px;font-size:18px}
+
+/* ABAS */
+.category-tabs{background:var(--lilas);padding:12px 20px;display:flex;gap:8px;overflow-x:auto}
+.category-tabs::-webkit-scrollbar{display:none}
+.cat-tab{white-space:nowrap;padding:10px 15px;border-radius:22px;font-size:14px;cursor:pointer;background:#fff;color:var(--roxo);border:2px solid transparent}
+.cat-tab.active{background:var(--roxo);color:#fff;border-color:var(--roxo)}
+
+/* CONTEÚDO */
+main{padding:20px}
+.section-box{background:#fff;border-radius:14px;padding:17px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.035)}
+.section-title{font-size:16px;font-weight:800;margin-bottom:11px}
+.select-box{width:100%;padding:13px 15px;border:1px solid #ddd;border-radius:10px;font-size:15px;background:#f7f7f8;outline:none}
+
+/* MODAL DE NICHOS */
+.niche-modal{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;z-index:5000}
+.niche-modal.open{display:flex;align-items:flex-start;justify-content:center}
+.niche-sheet{width:min(680px,100%);height:min(88vh,760px);margin-top:5vh;background:#f7f9fc;border-radius:28px 28px 0 0;overflow:hidden;display:flex;flex-direction:column}
+.niche-head{padding:18px 20px;border-bottom:1px solid #d9dde3;display:flex;justify-content:space-between;align-items:center;background:#fff}
+.niche-head h2{font-size:19px;color:#2b2630}
+.niche-close{border:0;background:transparent;font-size:27px;color:#555}
+.niche-list{overflow:auto}
+.niche-option{width:100%;border:0;border-bottom:1px solid #d8dde3;background:#f7f9fc;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;text-align:left;font-size:16px;color:#202126}
+.radio{width:23px;height:23px;border:3px solid #555;border-radius:50%;flex:none}
+.radio.selected{border-color:#673AB7;box-shadow:inset 0 0 0 5px #f7f9fc;background:#673AB7}
+
+/* CABEÇALHO OFERTAS */
+.offers-header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:21px 0 9px;padding-bottom:9px;border-bottom:3px solid var(--roxo)}
+.offers-title{font-size:20px;font-weight:800;color:var(--roxo);line-height:1.15}
+.offers-count{font-size:13px;color:#8a858d;line-height:1.2;text-align:right}
+.offers-count strong{font-size:16px;color:#5e5961}
+
+/* FILTROS */
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:2px 0 11px}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-chip{white-space:nowrap;background:#fff;border:1px solid #ddd4e4;color:#5c4c6d;border-radius:20px;padding:9px 12px;font-size:12px;font-weight:700}
+.filter-chip.active{background:var(--lilas);border-color:var(--roxo);color:var(--roxo2)}
+.sort-row{display:flex;align-items:center;gap:10px;margin:5px 0 17px}
+.sort-label{font-size:13px;color:#777;white-space:nowrap}
+.sort-select{flex:1;background:#fff;border:1px solid #ddd;border-radius:9px;padding:10px;color:#4b4650}
+
+/* CARDS */
+.products-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.product-card{background:#fff;border-radius:13px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid #eee}
+.product-image{width:100%;height:150px;position:relative;background:#eee}
+.product-image img{width:100%;height:100%;object-fit:cover;display:block}
+.commission-badge{position:absolute;left:8px;bottom:8px;background:var(--roxo);color:#fff;padding:5px 8px;font-size:11px;font-weight:800;border-radius:5px}
+.extra-badge{position:absolute;right:8px;top:8px;background:#8E24AA;color:#fff;font-size:10px;padding:5px 7px;border-radius:5px;font-weight:800}
+.product-info{padding:11px}
+.product-name{font-size:14px;color:#302c34;line-height:1.35;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px}
+.product-store{font-size:11px;color:#817b84;margin-bottom:7px}
+.product-price{font-size:18px;font-weight:800;color:#242027;margin-bottom:6px}
+.product-meta{font-size:11px;color:#6e6871;display:flex;justify-content:space-between;gap:5px;margin-bottom:7px}
+.earnings{background:var(--lilas);color:var(--roxo2);padding:7px 8px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:8px}
+.btn-create{width:100%;padding:10px;background:var(--roxo);color:#fff;border:0;border-radius:7px;font-size:12px;font-weight:800}
+.btn-create:hover{background:var(--roxo2)}
+.no-results{grid-column:1/-1;background:#fff;border-radius:12px;padding:35px 20px;text-align:center;color:#777}
+@media(max-width:360px){.products-grid{grid-template-columns:1fr}.product-image{height:180px}}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="top-bar">
+  <span>Encontre, Compartilhe e Ganhe</span>
+  <span><strong>DAILYOFERTAS</strong> · <a href="#" class="logout-link" onclick="mostrarMsg('Área de saída');return false;">Sair</a></span>
+</div>
+
+<header>
+  <div class="brand">💜 Mapa das Ofertas</div>
+  <div class="subtitle">As melhores oportunidades para você vender mais e ganhar comissões</div>
+  <div class="search-container">
+    <input id="searchInput" class="search-input" type="search" placeholder="Buscar ofertas..." oninput="renderizar()">
+    <button class="search-btn" onclick="renderizar()" aria-label="Pesquisar"><i class="fas fa-search"></i></button>
+  </div>
+</header>
+
+<div class="category-tabs">
+  <button class="cat-tab active" data-filter="todos" onclick="setFiltro('todos')">🔥 Todos</button>
+  <button class="cat-tab" data-filter="poucos" onclick="setFiltro('poucos')">🌱 Poucos Afiliados</button>
+  <button class="cat-tab" data-filter="vendidos" onclick="setFiltro('vendidos')">🛒 Mais Vendidos</button>
+  <button class="cat-tab" data-filter="extra" onclick="setFiltro('extra')">💜 Comissão Extra</button>
+  <button class="cat-tab" data-filter="ofertas" onclick="setFiltro('ofertas')">🏷️ Ofertas</button>
+</div>
+
+<main>
+  <div class="section-box">
+    <div class="section-title">Filtrar por Nicho</div>
+    <button class="select-box" id="nicheButton" onclick="abrirNichos()" style="text-align:left;display:flex;justify-content:space-between;align-items:center;cursor:pointer">
+      <span id="selectedNiche">Todos os nichos</span><span>⌄</span>
+    </button>
+  </div>
+
+  <div class="offers-header">
+    <span class="offers-title">🔥 Todas as Ofertas do Dia</span>
+    <span class="offers-count"><strong id="offersCount">0</strong> ofertas<br>disponíveis</span>
+  </div>
+
+  <div class="filter-row">
+    <button class="filter-chip active" data-filter="todos" onclick="setFiltro('todos')">🔥 Todos</button>
+    <button class="filter-chip" data-filter="poucos" onclick="setFiltro('poucos')">🌱 Poucos Afiliados</button>
+    <button class="filter-chip" data-filter="vendidos" onclick="setFiltro('vendidos')">🛒 Mais Vendidos</button>
+    <button class="filter-chip" data-filter="extra" onclick="setFiltro('extra')">💜 Comissão Extra</button>
+    <button class="filter-chip" data-filter="ofertas" onclick="setFiltro('ofertas')">🏷️ Ofertas</button>
+  </div>
+
+  <div class="sort-row">
+    <span class="sort-label">Ordenar por</span>
+    <select id="sortSelect" class="sort-select" onchange="renderizar()">
+      <option value="comissao">Maior comissão (R$)</option>
+      <option value="preco">Menor preço</option>
+      <option value="vendidos">Mais vendidos</option>
+      <option value="afiliados">Menos afiliados</option>
+    </select>
+  </div>
+
+  <div class="products-grid" id="produtos-container"></div>
+</main>
+
+<div class="niche-modal" id="nicheModal" onclick="if(event.target.id==='nicheModal')fecharNichos()">
+  <div class="niche-sheet">
+    <div class="niche-head">
+      <h2>Todos os nichos</h2>
+      <button class="niche-close" onclick="fecharNichos()">×</button>
+    </div>
+    <div class="niche-list" id="nicheList"></div>
+  </div>
+</div>
+
+<script>
+/*
+  IMPORTANTE:
+  - Os produtos abaixo mantêm os 20 produtos que você enviou.
+  - "afiliados" e "comissaoExtra" são campos DEMONSTRATIVOS para testar a interface.
+  - Quando sua API/banco estiver conectado, substitua esses campos pelos dados reais.
+  - A imagem atual de alguns produtos também é demonstrativa: o nome, preço e demais dados
+    continuam sendo os do seu objeto original. Para coerência visual final, use a URL real
+    da imagem do mesmo produto retornado pela sua fonte de ofertas.
+*/
+
+const nichos = [
+"Todos os nichos","Beleza e cuidados","Saúde","Casa e cozinha","Eletrodomésticos",
+"Celulares e acessórios","Informática","Câmeras e segurança","Games","Moda feminina",
+"Moda masculina","Moda infantil","Calçados","Bolsas e mochilas","Acessórios de moda",
+"Bagagem e viagem","Mãe e bebê","Pet shop","Esporte e lazer","Alimentos e bebidas",
+"Hobbies e artesanato","Livros","Papelaria e escritório","Acessórios automotivos",
+"Automotivo (geral)","Motos e acessórios","Serviços e outros"
+];
+
+const produtos = [
+{id:1,nome:"Rack com Painel para TV até 65 Polegadas Life Caemmun",loja:"Caemmun Movelaria",preco:805.49,comissao:13,ganho:104.71,avaliacao:4.8,vendidos:59,afiliados:7,comissaoExtra:false,nicho:"Casa e cozinha",imagem:"https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&h=400&fit=crop",novo:true},
+{id:2,nome:"Kit 2 Cadeira Orgânica Manuela sala de jantar",loja:"Brunaldi Decor",preco:349.94,comissao:13,ganho:45.49,avaliacao:4.8,vendidos:59,afiliados:14,comissaoExtra:false,nicho:"Casa e cozinha",imagem:"https://images.unsplash.com/photo-1617806118435-027860432642?w=600&h=400&fit=crop",desconto:30},
+{id:3,nome:"Kit Festa Cubo 4 Peças (dourado, rose gold, preto)",loja:"Festa Perfeita",preco:299.20,comissao:14,ganho:41.89,avaliacao:4.9,vendidos:120,afiliados:9,comissaoExtra:true,nicho:"Hobbies e artesanato",imagem:"https://images.unsplash.com/photo-1558642084-fd07fae5855f?w=600&h=400&fit=crop",desconto:12},
+{id:4,nome:"Poltrona Decorativa Com Almofada Amamentação",loja:"Conforto Lar",preco:273.67,comissao:13,ganho:35.58,avaliacao:4.7,vendidos:87,afiliados:6,comissaoExtra:false,nicho:"Mãe e bebê",imagem:"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=400&fit=crop",desconto:12,novo:true},
+{id:5,nome:"Mop Spray Refil de Microfibra com Reservatório",loja:"Casa Limpa",preco:89.90,comissao:13,ganho:11.69,avaliacao:4.8,vendidos:3200,afiliados:28,comissaoExtra:false,nicho:"Casa e cozinha",imagem:"https://images.unsplash.com/photo-1585771724682-556a8f837a02?w=600&h=400&fit=crop"},
+{id:6,nome:"Creme Hidratante Corporal 500ml Pele Macia",loja:"Beleza Natural",preco:49.90,comissao:18,ganho:8.98,avaliacao:4.9,vendidos:240,afiliados:5,comissaoExtra:true,nicho:"Beleza e cuidados",imagem:"https://images.unsplash.com/photo-1556227702-d1e4e7b5c22d?w=600&h=400&fit=crop"},
+{id:7,nome:"Bolsa Transversal Couro Sintético Feminina",loja:"Estilo Moda",preco:89.90,comissao:15,ganho:13.49,avaliacao:4.7,vendidos:156,afiliados:8,comissaoExtra:false,nicho:"Bolsas e mochilas",imagem:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&h=400&fit=crop"},
+{id:8,nome:"Conjunto 3 Potes Herméticos Plástico Cores",loja:"Organize Bem",preco:39.90,comissao:20,ganho:7.98,avaliacao:4.8,vendidos:89,afiliados:4,comissaoExtra:true,nicho:"Casa e cozinha",imagem:"https://images.unsplash.com/photo-1631889799483-9782d6f40e14?w=600&h=400&fit=crop"},
+{id:9,nome:"Tênis Esportivo Feminino Confortável",loja:"Movimento Esportes",preco:129.90,comissao:12,ganho:15.59,avaliacao:4.6,vendidos:450,afiliados:31,comissaoExtra:false,nicho:"Esporte e lazer",imagem:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=400&fit=crop"},
+{id:10,nome:"Brinquedo Educativo Montessori Criança 3+",loja:"Mundo Kids",preco:59.90,comissao:16,ganho:9.58,avaliacao:4.9,vendidos:45,afiliados:3,comissaoExtra:true,nicho:"Mãe e bebê",imagem:"https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=600&h=400&fit=crop"},
+{id:11,nome:"Ração Seca Cães Adultos Frango 15kg",loja:"Pet Amor",preco:149.90,comissao:8,ganho:11.99,avaliacao:4.8,vendidos:320,afiliados:19,comissaoExtra:false,nicho:"Pet shop",imagem:"https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=400&fit=crop"},
+{id:12,nome:"Panela de Pressão Elétrica 5L Antiaderente",loja:"Cozinha Feliz",preco:199.90,comissao:10,ganho:19.99,avaliacao:4.7,vendidos:580,afiliados:21,comissaoExtra:false,nicho:"Eletrodomésticos",imagem:"https://images.unsplash.com/photo-1585664811087-47f65abbad66?w=600&h=400&fit=crop"},
+{id:13,nome:"Fone Bluetooth Sem Fio Cancelamento Ruído",loja:"Tech Mundo",preco:149.90,comissao:11,ganho:16.49,avaliacao:4.5,vendidos:890,afiliados:18,comissaoExtra:false,nicho:"Celulares e acessórios",imagem:"https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&h=400&fit=crop"},
+{id:14,nome:"Vestido Midi Floral Verão - Várias Cores",loja:"Moda Bella",preco:89.90,comissao:15,ganho:13.49,avaliacao:4.6,vendidos:112,afiliados:7,comissaoExtra:false,nicho:"Moda feminina",imagem:"https://images.unsplash.com/photo-1572804013309-59a88b7e92a1?w=600&h=400&fit=crop"},
+{id:15,nome:"Travesseiro de Amamentação Ajustável Conforto",loja:"Mãe Conforto",preco:119.90,comissao:16,ganho:19.18,avaliacao:4.8,vendidos:96,afiliados:6,comissaoExtra:true,nicho:"Mãe e bebê",imagem:"https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=600&h=400&fit=crop"},
+{id:16,nome:"Kit 6 Copos Vidro Temperado Transparente",loja:"Vidro Casa",preco:44.90,comissao:18,ganho:8.08,avaliacao:4.8,vendidos:180,afiliados:11,comissaoExtra:false,nicho:"Casa e cozinha",imagem:"https://images.unsplash.com/photo-1603484581950-0f76329c10bb?w=600&h=400&fit=crop"},
+{id:17,nome:"Suporte para Celular Veículo 360 Graus",loja:"Auto Tech",preco:35.90,comissao:25,ganho:8.98,avaliacao:4.7,vendidos:245,afiliados:4,comissaoExtra:true,nicho:"Acessórios automotivos",imagem:"https://images.unsplash.com/photo-1542750622-cd1935e35426?w=600&h=400&fit=crop"},
+{id:18,nome:"Jogo de Lençol Casal 4 Peças Estampado",loja:"Sonho Lar",preco:79.90,comissao:15,ganho:11.99,avaliacao:4.6,vendidos:310,afiliados:13,comissaoExtra:false,nicho:"Casa e cozinha",imagem:"https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=600&h=400&fit=crop"},
+{id:19,nome:"Shampoo e Condicionador Kit 2x400ml Nutritivo",loja:"Beleza Capilar",preco:54.90,comissao:17,ganho:9.33,avaliacao:4.8,vendidos:520,afiliados:9,comissaoExtra:false,nicho:"Beleza e cuidados",imagem:"https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=600&h=400&fit=crop"},
+{id:20,nome:"Bola de Futebol Campo Couro Sintético Resistente",loja:"Esporte Total",preco:49.90,comissao:16,ganho:7.98,avaliacao:4.7,vendidos:145,afiliados:10,comissaoExtra:false,nicho:"Esporte e lazer",imagem:"https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&h=400&fit=crop"}
+];
+
+let filtroAtual="todos";
+let nichoAtual="Todos os nichos";
+
+function mostrarMsg(texto){
+  const t=document.getElementById("toast");
+  t.textContent=texto;t.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer=setTimeout(()=>t.classList.remove("show"),2300);
+}
+
+function setFiltro(filtro){
+  filtroAtual=filtro;
+  document.querySelectorAll(".cat-tab,.filter-chip").forEach(el=>{
+    el.classList.toggle("active",el.dataset.filter===filtro);
+  });
+  renderizar();
+}
+
+function abrirNichos(){
+  const list=document.getElementById("nicheList");
+  list.innerHTML=nichos.map(n=>`
+    <button class="niche-option" onclick="selecionarNicho(${JSON.stringify(n)})">
+      <span>${n}</span>
+      <span class="radio ${n===nichoAtual?"selected":""}"></span>
+    </button>
+  `).join("");
+  document.getElementById("nicheModal").classList.add("open");
+}
+
+function fecharNichos(){document.getElementById("nicheModal").classList.remove("open")}
+
+function selecionarNicho(nicho){
+  nichoAtual=nicho;
+  document.getElementById("selectedNiche").textContent=nicho;
+  fecharNichos();
+  renderizar();
+}
+
+function renderizar(){
+  const busca=document.getElementById("searchInput").value.trim().toLowerCase();
+  let lista=produtos.filter(p=>{
+    const texto=(p.nome+" "+p.loja).toLowerCase();
+    const bateBusca=!busca||texto.includes(busca);
+    const bateNicho=nichoAtual==="Todos os nichos"||p.nicho===nichoAtual;
+    return bateBusca&&bateNicho;
+  });
+
+  if(filtroAtual==="poucos") lista=lista.filter(p=>p.afiliados<=10);
+  if(filtroAtual==="vendidos") lista.sort((a,b)=>b.vendidos-a.vendidos);
+  if(filtroAtual==="extra") lista=lista.filter(p=>p.comissaoExtra);
+  if(filtroAtual==="ofertas") lista=lista.filter(p=>p.desconto||p.preco<=100||p.comissao>=18);
+
+  const ordenacao=document.getElementById("sortSelect").value;
+  if(ordenacao==="comissao") lista.sort((a,b)=>b.ganho-a.ganho);
+  if(ordenacao==="preco") lista.sort((a,b)=>a.preco-b.preco);
+  if(ordenacao==="vendidos") lista.sort((a,b)=>b.vendidos-a.vendidos);
+  if(ordenacao==="afiliados") lista.sort((a,b)=>a.afiliados-b.afiliados);
+
+  document.getElementById("offersCount").textContent=lista.length;
+
+  const container=document.getElementById("produtos-container");
+  if(!lista.length){
+    container.innerHTML=`<div class="no-results">Nenhuma oferta encontrada para os filtros selecionados.</div>`;
+    return;
+  }
+
+  container.innerHTML=lista.map(p=>{
+    const desconto=p.desconto?` <span style="color:#C62828;font-size:12px">-${p.desconto}%</span>`:"";
+    const extra=p.comissaoExtra?`<span class="extra-badge">COMISSÃO EXTRA</span>`:"";
+    return `
+      <article class="product-card">
+        <div class="product-image">
+          ${extra}
+          <img src="${p.imagem}" alt="${p.nome}" loading="lazy">
+          <span class="commission-badge">Comissão ${p.comissao}%</span>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">${p.nome}</h3>
+          <p class="product-store">${p.loja}</p>
+          <p class="product-price">R$ ${p.preco.toFixed(2).replace(".",",")}${desconto}</p>
+          <div class="product-meta">
+            <span>⭐ ${p.avaliacao}</span>
+            <span>${p.vendidos} vendidos</span>
+          </div>
+          <div class="product-meta">
+            <span>🌱 ${p.afiliados} afiliados</span>
+            <span>${p.nicho}</span>
+          </div>
+          <div class="earnings">Você ganha ~R$ ${p.ganho.toFixed(2).replace(".",",")}</div>
+          <button class="btn-create" onclick="criarOferta(${p.id})">CRIAR OFERTA</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function criarOferta(id){
+  const produto=produtos.find(p=>p.id===id);
+  mostrarMsg("Abrindo oferta: "+produto.nome);
+  // No aplicativo real, aqui deve entrar a navegação para a tela de criação.
+}
+
+renderizar();
+</script>
+</body>
+</html>
