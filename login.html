@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa das Ofertas — Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #7B1FA2, #9C27B0, #BA68C8);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 35px 25px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 4px 20px rgba(123, 31, 162, 0.25);
+        }
+        .logo-section { text-align: center; margin-bottom: 30px; }
+        .logo-icon { font-size: 48px; color: #7B1FA2; margin-bottom: 10px; }
+        .logo-section h1 { color: #7B1FA2; font-size: 24px; margin-bottom: 5px; }
+        .logo-section p { color: #777; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #444;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E1BEE7;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #9C27B0;
+            box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.15);
+        }
+        .password-wrapper { position: relative; }
+        .password-wrapper input { padding-right: 45px; }
+        .eye-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #9C27B0;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #7B1FA2, #9C27B0);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-primary:hover { 
+            background: linear-gradient(135deg, #6A1B9A, #8E24AA);
+            transform: translateY(-2px);
+        }
+        .aviso-texto {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo-section">
+            <i class="fas fa-shopping-cart logo-icon"></i>
+            <h1>Mapa das Ofertas</h1>
+            <p>Conecte sua conta de afiliado</p>
+        </div>
+
+        <div class="form-group">
+            <label for="user-name">Seu Nome</label>
+            <input type="text" id="user-name" placeholder="Digite seu nome">
+        </div>
+
+        <div class="form-group">
+            <label for="app-id">App ID Shopee</label>
+            <input type="text" id="app-id" placeholder="Cole seu App ID aqui">
+        </div>
+
+        <div class="form-group">
+            <label for="app-secret">App Secret</label>
+            <div class="password-wrapper">
+                <input type="password" id="app-secret" placeholder="Sua chave secreta">
+                <button type="button" id="toggle-secret" class="eye-btn">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="api-url">URL da API (opcional)</label>
+            <input type="text" id="api-url" placeholder="https://open-api.shopee.com.br">
+        </div>
+
+        <button type="button" class="btn-primary" id="botao-entrar">
+            <i class="fas fa-door-open"></i> Entrar
+        </button>
+
+        <p class="aviso-texto">
+            🔒 Seus dados ficam salvos apenas no seu navegador.<br>
+            Não enviamos para nenhum servidor externo.
+        </p>
+    </div>
+
+    <script>
+        function fazerLogin() {
+            const nome = document.getElementById('user-name').value.trim();
+            const appId = document.getElementById('app-id').value.trim();
+            const appSecret = document.getElementById('app-secret').value.trim();
+            const apiUrl = document.getElementById('api-url').value.trim() || 'https://open-api.shopee.com.br';
+
+            if (!nome) {
+                alert('⚠️ Por favor, digite seu nome!');
+                return false;
+            }
+            if (!appId) {
+                alert('⚠️ Por favor, insira seu App ID da Shopee!');
+                return false;
+            }
+            if (!appSecret) {
+                alert('⚠️ Por favor, insira sua App Secret!');
+                return false;
+            }
+
+            localStorage.setItem('userName', nome);
+            localStorage.setItem('appId', appId);
+            localStorage.setItem('appSecret', appSecret);
+            localStorage.setItem('apiUrl', apiUrl);
+
+            console.log('✅ Credenciais salvas!');
+            window.location.href = 'dashboard.html';
+            return true;
+        }
+
+        function configurarBotaoOlho() {
+            const botaoOlho = document.getElementById('toggle-secret');
+            if (!botaoOlho) return;
+            
+            botaoOlho.addEventListener('click', function() {
+                const campo = document.getElementById('app-secret');
+                const icone = botaoOlho.querySelector('i');
+                if (campo.type === 'password') {
+                    campo.type = 'text';
+                    icone.className = 'fas fa-eye-slash';
+                } else {
+                    campo.type = 'password';
+                    icone.className = 'fas fa-eye';
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const botao = document.getElementById('botao-entrar');
+            if (botao) {
+                botao.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    fazerLogin();
+                });
+            }
+            configurarBotaoOlho();
+        });
+    </script>
+</body>
+</html>
+<script>
+// ==============================================
+// 🔌 OPENAPI DA SHOPEE — Conexão Real
+// ==============================================
+
+// Carrega as credenciais que vieram da tela de login
+const CREDENCIAIS = {
+    nome: localStorage.getItem('userName') || 'Visitante',
+    appId: localStorage.getItem('appId') || '',
+    appSecret: localStorage.getItem('appSecret') || '',
+    apiUrl: localStorage.getItem('apiUrl') || 'https://open-api.shopee.com.br'
+};
+
+// Mostra o nome do usuário na tela
+document.addEventListener('DOMContentLoaded', function() {
+    const elementoNome = document.getElementById('exibirNome');
+    if (elementoNome) {
+        elementoNome.textContent = CREDENCIAIS.nome;
+    }
+    
+    console.log('✅ Conectado como:', CREDENCIAIS.nome);
+    console.log('📡 API:', CREDENCIAIS.apiUrl);
+    console.log('🔑 App ID:', CREDENCIAIS.appId ? 'Configurado' : 'Não configurado');
+    
+    // Verifica se tem credenciais
+    if (!CREDENCIAIS.appId || !CREDENCIAIS.appSecret) {
+        console.log('⚠️ Sem credenciais — usando exemplos');
+        carregarExemplos();
+    } else {
+        console.log('🔑 Credenciais encontradas — pronto para conectar');
+        // Aqui é onde a chamada real vai quando a integração estiver pronta
+        carregarExemplos(); // ← temporário, remova quando API real estiver pronta
+    }
+});
+
+// Função de sair
+function sair() {
+    if (confirm('Deseja sair da sua conta?')) {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+}
+
+// ==============================================
+// 📡 FUNÇÃO PARA BUSCAR PRODUTOS DA OPENAPI
+// ==============================================
+async function buscarProdutosAPI() {
+    if (!CREDENCIAIS.appId || !CREDENCIAIS.appSecret) {
+        console.log('⚠️ Credenciais não preenchidas');
+        return [];
+    }
+
+    try {
+        console.log('📡 Conectando à OpenAPI da Shopee...');
+        
+        // ⚠️ Esta é a estrutura da chamada real — ative quando sua API estiver aprovada
+        // const resposta = await fetch(`${CREDENCIAIS.apiUrl}/api/v2/affiliate/products?app_id=${CREDENCIAIS.appId}`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Authorization': `Bearer ${CREDENCIAIS.appSecret}`,
+        //         'Content-Type': 'application/json'
+        //     }
+        // });
+        // const dados = await resposta.json();
+        // return dados.data?.products || [];
+        
+        console.log('✅ Estrutura da API pronta — ative a chamada acima quando estiver aprovada');
+        return [];
+    } catch (erro) {
+        console.error('❌ Erro na API:', erro);
+        return [];
+    }
+}
+
+// ==============================================
+// 📦 DADOS DE EXEMPLO — Mostra produtos enquanto API não está ativa
+// ==============================================
+const produtosExemplo = [
+    {id:1,nome:"Rack com Painel para TV até 65\"",preco:799.90,comissao:14,poucos:true,img:"https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=300&fit=crop"},
+    {id:2,nome:"Vestido Midi Floral Elegante",preco:89.90,comissao:18,poucos:false,img:"https://images.unsplash.com/photo-1572804013309-59a88b7e92a1?w=400&h=300&fit=crop"},
+    {id:3,nome:"Travesseiro de Amamentação Ajustável",preco:85.90,comissao:22,poucos:true,img:"https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=400&h=300&fit=crop"},
+    {id:4,nome:"Kit 4 Potes Herméticos de Vidro",preco:59.90,comissao:19,poucos:true,img:"https://images.unsplash.com/photo-1614935151651-0bea6508db6b?w=400&h=300&fit=crop"},
+    {id:5,nome:"Creme Hidratante Corporal 500ml",preco:44.90,comissao:25,poucos:false,img:"https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&h=300&fit=crop"}
+];
+
+function carregarExemplos() {
+    console.log('📦 Carregando produtos de exemplo...');
+    const container = document.getElementById('gradeProdutos');
+    const contagem = document.getElementById('qtdOfertas');
+    
+    if (contagem) contagem.textContent = produtosExemplo.length + ' produtos';
+    if (!container) return;
+    
+    container.innerHTML = '';
+    produtosExemplo.forEach(p => {
+        const badgePoucos = p.poucos ? '<span style="background:#4CAF50;color:white;padding:2px 6px;border-radius:3px;font-size:10px;">Poucos Afiliados</span>' : '';
+        container.innerHTML += `
+            <div style="background:white;border-radius:8px;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+                <div style="height:140px;background:#f9f7fc;position:relative;">
+                    <img src="${p.img}" alt="${p.nome}" style="width:100%;height:100%;object-fit:cover;">
+                    <div style="position:absolute;top:6px;left:6px;right:6px;display:flex;justify-content:space-between;">
+                        <span style="background:#7B1FA2;color:white;padding:2px 6px;border-radius:3px;font-size:11px;font-weight:bold;">${p.comissao}%</span>
+                        ${badgePoucos}
+                    </div>
+                </div>
+                <div style="padding:10px;">
+                    <h3 style="font-size:13px;color:#333;margin-bottom:4px;line-height:1.3;">${p.nome}</h3>
+                    <p style="font-size:16px;font-weight:bold;color:#222;margin-bottom:4px;">R$ ${p.preco.toFixed(2).replace('.', ',')}</p>
+                    <p style="font-size:11px;color:#777;margin-bottom:8px;">Ganhe ~R$${(p.preco * p.comissao / 100).toFixed(2).replace('.', ',')}</p>
+                    <button style="width:100%;background:#7B1FA2;color:white;border:none;padding:8px;border-radius:4px;cursor:pointer;font-size:13px;font-weight:bold;">CRIAR OFERTA</button>
+                </div>
+            </div>
+        `;
+    });
+}
+</script>
